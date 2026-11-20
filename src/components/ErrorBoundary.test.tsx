@@ -103,4 +103,45 @@ describe('ErrorBoundary', () => {
     expect(screen.getByText('About page')).toBeInTheDocument()
     expect(screen.queryByText('Something went wrong')).not.toBeInTheDocument()
   })
+
+  it('triggers page reload when Reload page is clicked', async () => {
+    const user = userEvent.setup()
+    const reloadMock = vi.fn()
+    vi.stubGlobal('location', {
+      ...window.location,
+      reload: reloadMock,
+    })
+
+    render(
+      <MemoryRouter>
+        <ErrorBoundary>
+          <BrokenComponent />
+        </ErrorBoundary>
+      </MemoryRouter>,
+    )
+
+    await user.click(screen.getByRole('button', { name: 'Reload page' }))
+    expect(reloadMock).toHaveBeenCalledOnce()
+    vi.unstubAllGlobals()
+  })
+
+  it('displays default fallback subtitle when error message is empty', () => {
+    function EmptyMessageErrorComponent(): React.ReactNode {
+      throw new Error('')
+    }
+
+    render(
+      <MemoryRouter>
+        <ErrorBoundary>
+          <EmptyMessageErrorComponent />
+        </ErrorBoundary>
+      </MemoryRouter>,
+    )
+
+    expect(
+      screen.getByText(
+        'An unexpected error occurred while rendering this page.',
+      ),
+    ).toBeInTheDocument()
+  })
 })
