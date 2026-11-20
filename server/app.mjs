@@ -68,7 +68,9 @@ function clientKey(req, trustProxy) {
   if (trustProxy) {
     const forwarded = req.headers['x-forwarded-for']
     if (typeof forwarded === 'string' && forwarded) {
-      return forwarded.split(',')[0].trim()
+      // A single trusted proxy appends the peer address, so the last entry is
+      // the only one a client cannot choose.
+      return forwarded.split(',').at(-1).trim()
     }
   }
   return req.socket.remoteAddress ?? 'unknown'
