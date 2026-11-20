@@ -122,4 +122,22 @@ describe('CugaStudio with a live CUGA', () => {
       await screen.findByText(/CUGA could not be reached/),
     ).toBeInTheDocument()
   })
+
+  it('dismisses the error notification', async () => {
+    mockFetch({
+      '/api/status': json(status),
+      '/api/cuga/chat': json({ error: 'cuga_unreachable' }, 502),
+    })
+    render(<CugaStudio />)
+    const live = await screen.findByRole('tab', { name: 'Live CUGA' })
+    await waitFor(() => expect(live).toBeEnabled())
+    await userEvent.click(live)
+    await userEvent.type(
+      screen.getByLabelText('Ask or request an edit'),
+      'hello{enter}',
+    )
+    await screen.findByText(/CUGA could not be reached/)
+    await userEvent.click(screen.getByRole('button', { name: /close/i }))
+    expect(screen.queryByText(/CUGA could not be reached/)).toBeNull()
+  })
 })

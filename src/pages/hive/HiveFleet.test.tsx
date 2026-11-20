@@ -47,6 +47,15 @@ describe('HiveFleet guided preview', () => {
     expect(screen.getByText(/CI still running/)).toBeInTheDocument()
   })
 
+  it('jumps to a stage when its progress step is clicked', async () => {
+    mockFetch({})
+    render(<HiveFleet />)
+    await screen.findByText(/Hive is not connected/)
+    await userEvent.click(screen.getByText('stage/060-reviewed'))
+    expect(screen.getByText(/CI still running/)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Previous stage' })).toBeEnabled()
+  })
+
   it('lists the documented trust levels and offers no chat input', async () => {
     mockFetch({})
     render(<HiveFleet />)
