@@ -105,7 +105,7 @@ describe('CugaStudio with a live CUGA', () => {
     expect(screen.getAllByText('live CUGA').length).toBeGreaterThan(0)
   })
 
-  it('shows a safe error when the backend fails', async () => {
+  it('shows a safe error when the backend fails and can be dismissed', async () => {
     mockFetch({
       '/api/status': json(status),
       '/api/cuga/chat': json({ error: 'cuga_unreachable' }, 502),
@@ -121,5 +121,13 @@ describe('CugaStudio with a live CUGA', () => {
     expect(
       await screen.findByText(/CUGA could not be reached/),
     ).toBeInTheDocument()
+
+    const closeButton = screen.getByRole('button', {
+      name: /close notification/i,
+    })
+    await userEvent.click(closeButton)
+    expect(
+      screen.queryByText(/CUGA could not be reached/),
+    ).not.toBeInTheDocument()
   })
 })
