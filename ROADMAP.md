@@ -20,15 +20,15 @@ direction below; the repository does not yet state what the site is for.
 | CI workflow gating lint, format, test and build | #11, #16 | Human or merge-tier agent (workflows) |
 | LICENSE and a stable default branch             | #25      | Maintainer decision                   |
 | Close stale scaffold issue #4                   | #4       | Maintainer                            |
-| Production routing of `/api` to the BFF         | -        | Maintainer decision (see Later)       |
+| Production routing of `/api` to the BFF         | #77      | Maintainer decision (see Later)       |
 
 #11 and #16 describe the same missing workflow; keep one and close the other.
 
 ## Later: candidates, not commitments
 
 - Accessibility pass (keyboard navigation, landmarks, contrast) using Carbon defaults; automated checks proposed in #45.
-- Deployment target and preview per PR. The static build needs an `index.html` fallback and a reverse proxy for `/api` to `server/`, so a static-only host such as GitHub Pages serves the site but not the Field Lab's live data.
-- Carbon theme selection and light/dark support.
+- Deployment target and preview per PR (#77). The static build needs an `index.html` fallback and a reverse proxy for `/api` to `server/`, so a static-only host such as GitHub Pages serves the site but not the Field Lab's live data.
+- Carbon theme selection and light/dark support; proposed in #82.
 
 ## Out of scope for now
 
