@@ -1,6 +1,8 @@
 # Beehive
 
-Static website built with React, Vite, TypeScript and the IBM Carbon Design System.
+Static website built with React 19, Vite, TypeScript and the IBM Carbon Design
+System (`@carbon/react`), with `react-router-dom` for client-side routing and
+Sass for styles.
 
 ## Prerequisites
 
@@ -13,6 +15,17 @@ Static website built with React, Vite, TypeScript and the IBM Carbon Design Syst
 npm ci
 npm run dev
 ```
+
+## Project structure
+
+| Path                | Purpose                                                  |
+| ------------------- | -------------------------------------------------------- |
+| `src/main.tsx`      | Entry point; mounts `App` inside the router              |
+| `src/App.tsx`       | Root component; route definitions                        |
+| `src/components/`   | Shared components (`Layout` UI Shell)                    |
+| `src/pages/`        | Page components (`Home`, `About`, `Contact`, `NotFound`) |
+| `src/index.scss`    | Global styles and IBM Carbon Design System imports       |
+| `src/test/setup.ts` | Vitest setup (`@testing-library/jest-dom`)               |
 
 ## Before you open a PR
 
