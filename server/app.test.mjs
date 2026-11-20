@@ -293,6 +293,19 @@ describe('server', () => {
     expect(await run({ TRUST_PROXY: '1' })).toEqual([200, 200])
   })
 
+  it('ignores client-supplied X-Forwarded-For entries when the proxy is trusted', async () => {
+    const handler = createHandler({
+      env: { RATE_LIMIT_PER_MINUTE: '1', TRUST_PROXY: '1' },
+    })
+    const hit = (spoofed) =>
+      call(handler, {
+        url: '/api/status',
+        headers: { 'x-forwarded-for': `${spoofed}, 203.0.113.7` },
+      })
+    expect((await hit('9.9.9.1')).status).toBe(200)
+    expect((await hit('9.9.9.2')).body.error).toBe('rate_limited')
+  })
+
   it('returns 404 for unknown routes and hides internal errors', async () => {
     const handler = createHandler({ env: {} })
     expect((await call(handler, { url: '/nope' })).body.error).toBe('not_found')
