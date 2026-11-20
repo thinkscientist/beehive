@@ -47,6 +47,30 @@ describe('HiveFleet guided preview', () => {
     expect(screen.getByText(/CI still running/)).toBeInTheDocument()
   })
 
+  it('allows clicking on a progress step to jump directly to that stage', async () => {
+    mockFetch({})
+    render(<HiveFleet />)
+    await screen.findByText(/Hive is not connected/)
+
+    // Click on the third step "stage/030-pr-in-progress"
+    const step3 = screen.getByText('stage/030-pr-in-progress')
+    await userEvent.click(step3)
+
+    // Verify the UI updates to show the correct stage details
+    expect(
+      screen.getByText(/The agent works in a branch and signs its commits/),
+    ).toBeInTheDocument()
+
+    // Click back to the first step "stage/010-actionable"
+    const step1 = screen.getByText('stage/010-actionable')
+    await userEvent.click(step1)
+
+    // Verify the UI reverts to the first stage
+    expect(
+      screen.getByText(/The issue is triaged and eligible/),
+    ).toBeInTheDocument()
+  })
+
   it('lists the documented trust levels and offers no chat input', async () => {
     mockFetch({})
     render(<HiveFleet />)
