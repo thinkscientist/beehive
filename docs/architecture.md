@@ -28,7 +28,7 @@ graph TD
     Content --> Hive["src/pages/hive/HiveFleet.tsx (/hive)"]
     Content --> Contact["src/pages/Contact.tsx (/contact)"]
     Content --> NotFound["src/pages/NotFound.tsx (*)"]
-    Cuga -->|"/api/status, /api/cuga/chat"| Api["src/lib/api.ts"]
+    Cuga -->|"/api/status, /api/cuga/chat"| Api["src/lib/http.ts + useServiceStatus.ts"]
     Hive -->|"/api/status, /api/hive/runs"| Api
     Api -->|"fetch (Vite proxies /api in dev)"| Bff["server/app.mjs (BFF)"]
     Bff -->|"CUGA_BASE_URL"| CugaSvc["CUGA server"]
@@ -48,7 +48,9 @@ src/
 │   ├── agents.ts        # Agent roster shared by Home and About
 │   └── agents.test.ts
 ├── lib/
-│   └── api.ts           # /api client: useServiceStatus, getJson, postJson, ERROR_MESSAGES
+│   ├── http.ts          # /api client: getJson, postJson, describeError, ERROR_MESSAGES
+│   ├── useServiceStatus.ts  # Hook that reads /api/status
+│   └── api.ts           # Backwards-compatible re-exports; import from the two files above
 ├── pages/               # Route-level page components
 │   ├── Home.tsx         # Hero banner, mission, and agent role tiles
 │   ├── Home.test.tsx
@@ -106,7 +108,7 @@ Every route is rate limited per client (`RATE_LIMIT_PER_MINUTE`, default 20) and
 | `POST /api/cuga/chat` | Takes `{ message, pageContext }`, returns `{ answer, events }`.         |
 | `GET /api/hive/runs`  | Returns `{ runs }` with only the fields the UI renders.                 |
 
-Failures return `{ "error": "<code>" }`. The browser maps each code to visitor-safe text in `ERROR_MESSAGES` in `src/lib/api.ts`; unknown codes fall back to a generic message. The two lists are kept in sync by hand, so add a code on both sides.
+Failures return `{ "error": "<code>" }`. The browser maps each code to visitor-safe text in `ERROR_MESSAGES` in `src/lib/http.ts`; unknown codes fall back to a generic message. The two lists are kept in sync by hand, so add a code on both sides.
 
 | Code                                                                                                       | Status             | Thrown when                                      | In `ERROR_MESSAGES`  |
 | ---------------------------------------------------------------------------------------------------------- | ------------------ | ------------------------------------------------ | -------------------- |
