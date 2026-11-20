@@ -17,7 +17,50 @@ function renderLayout() {
   )
 }
 
-describe('Layout side navigation', () => {
+describe('Layout', () => {
+  it('renders header brand link and skip to main content link', () => {
+    renderLayout()
+    expect(
+      screen.getByRole('link', { name: /skip to main content/i }),
+    ).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Beehive' })).toHaveAttribute(
+      'href',
+      '/',
+    )
+  })
+
+  it('renders all navigation items in header navigation', () => {
+    renderLayout()
+    const nav = screen.getByRole('navigation', { name: 'Main' })
+    for (const label of [
+      'Home',
+      'About',
+      'CUGA Page Studio',
+      'Hive Agent Fleet',
+      'Contact',
+    ]) {
+      expect(
+        within(nav).getByRole('menuitem', { name: label }),
+      ).toBeInTheDocument()
+    }
+  })
+
+  it('renders all navigation items in side navigation', () => {
+    renderLayout()
+    const sideNav = screen.getByRole('navigation', { name: 'Side navigation' })
+    for (const label of [
+      'Home',
+      'About',
+      'CUGA Page Studio',
+      'Hive Agent Fleet',
+      'Contact',
+    ]) {
+      expect(
+        within(sideNav).getByRole('link', { name: label }),
+      ).toBeInTheDocument()
+    }
+  })
+
   it('closes the side navigation when one of its links is clicked', async () => {
     renderLayout()
     await userEvent.click(screen.getByRole('button', { name: 'Open menu' }))

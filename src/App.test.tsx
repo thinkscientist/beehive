@@ -16,11 +16,15 @@ describe('App', () => {
   it.each([
     ['/', 'Welcome to Beehive'],
     ['/about', 'About Beehive'],
+    ['/cuga', 'CUGA Page Studio'],
+    ['/hive', 'Hive Agent Fleet'],
     ['/contact', 'Contact'],
     ['/no-such-page', 'Page not found'],
-  ])('renders the page for %s', (path, heading) => {
+  ])('renders the page for %s', async (path, heading) => {
     renderAt(path)
-    expect(screen.getByRole('heading', { name: heading })).toBeInTheDocument()
+    expect(
+      await screen.findByRole('heading', { name: heading }),
+    ).toBeInTheDocument()
   })
 
   it('renders the shell with a skip link and the main navigation', () => {
@@ -29,17 +33,40 @@ describe('App', () => {
       screen.getByRole('link', { name: /skip to main content/i }),
     ).toBeInTheDocument()
     const nav = screen.getByRole('navigation', { name: 'Main' })
-    for (const label of ['Home', 'About', 'Contact']) {
+    for (const label of [
+      'Home',
+      'About',
+      'CUGA Page Studio',
+      'Hive Agent Fleet',
+      'Contact',
+    ]) {
       expect(nav).toHaveTextContent(label)
     }
   })
 
-  it('navigates client-side when a nav link is clicked', async () => {
-    renderAt('/')
-    const nav = screen.getByRole('navigation', { name: 'Main' })
-    await userEvent.click(nav.querySelector('a[href="/about"]')!)
+  it.each([
+    ['/about', 'About Beehive'],
+    ['/cuga', 'CUGA Page Studio'],
+    ['/hive', 'Hive Agent Fleet'],
+    ['/contact', 'Contact'],
+  ])(
+    'navigates client-side to %s when a header nav link is clicked',
+    async (path, heading) => {
+      renderAt('/')
+      const nav = screen.getByRole('navigation', { name: 'Main' })
+      await userEvent.click(nav.querySelector(`a[href="${path}"]`)!)
+      expect(screen.getByRole('heading', { name: heading })).toBeInTheDocument()
+    },
+  )
+
+  it('navigates client-side to the home page when the header brand link is clicked', async () => {
+    renderAt('/about')
     expect(
       screen.getByRole('heading', { name: 'About Beehive' }),
+    ).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('link', { name: 'Beehive' }))
+    expect(
+      screen.getByRole('heading', { name: 'Welcome to Beehive' }),
     ).toBeInTheDocument()
   })
 
