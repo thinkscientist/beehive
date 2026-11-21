@@ -37,11 +37,12 @@ The following npm scripts are available:
 | `npm run dev`           | Starts Vite dev server with hot module replacement                                 |
 | `npm run build`         | Runs TypeScript compiler checks (`tsc -b`) and builds production assets in `dist/` |
 | `npm run preview`       | Locally serves the production build in `dist/`                                     |
+| `npm run server`        | Starts the `/api` server for live CUGA and Hive data (see `.env.example`)          |
 | `npm run lint`          | Runs ESLint checks across TypeScript and React files                               |
 | `npm run format`        | Automatically formats files using Prettier                                         |
 | `npm run format:check`  | Verifies that all files conform to Prettier formatting                             |
 | `npm test`              | Runs unit tests once via Vitest                                                    |
-| `npm run test:coverage` | Runs unit tests with Istanbul/V8 coverage reporting (enforces 80% threshold)       |
+| `npm run test:coverage` | Runs unit tests with V8 coverage reporting (enforces 80% threshold)                |
 
 ## Quality Standards
 
