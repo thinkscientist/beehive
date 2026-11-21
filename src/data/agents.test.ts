@@ -20,4 +20,25 @@ describe('AGENTS', () => {
       }
     }
   })
+
+  it('has valid tier levels for all agents', () => {
+    const validTiers = new Set(['L4', 'L5', 'L7'])
+    for (const agent of AGENTS) {
+      expect(validTiers.has(agent.tier)).toBe(true)
+    }
+  })
+
+  it('contains all required schema fields on every agent object', () => {
+    const requiredKeys = [
+      'id',
+      'label',
+      'tier',
+      'summary',
+      'detail',
+      'description',
+    ]
+    for (const agent of AGENTS) {
+      expect(Object.keys(agent).sort()).toEqual(requiredKeys.sort())
+    }
+  })
 })

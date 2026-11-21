@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { describe, expect, it } from 'vitest'
+import { AGENTS } from '../data/agents'
 import Home from './Home'
 
 function renderHome() {
@@ -28,16 +29,16 @@ describe('Home', () => {
 
   it('renders the Meet the agents CTA link', () => {
     renderHome()
-    expect(
-      screen.getByRole('link', { name: /meet the agents/i }),
-    ).toBeInTheDocument()
+    const link = screen.getByRole('link', { name: /meet the agents/i })
+    expect(link).toBeInTheDocument()
+    expect(link).toHaveAttribute('href', '/about')
   })
 
   it('renders the Get in touch CTA link', () => {
     renderHome()
-    expect(
-      screen.getByRole('link', { name: /get in touch/i }),
-    ).toBeInTheDocument()
+    const link = screen.getByRole('link', { name: /get in touch/i })
+    expect(link).toBeInTheDocument()
+    expect(link).toHaveAttribute('href', '/contact')
   })
 
   it('renders the Agent roles section heading', () => {
@@ -47,17 +48,11 @@ describe('Home', () => {
     ).toBeInTheDocument()
   })
 
-  it('renders all six agent feature tiles', () => {
+  it('renders all six agent feature tiles with labels and descriptions', () => {
     renderHome()
-    for (const label of [
-      'Scanner',
-      'Architect',
-      'CI Maintainer',
-      'Supervisor',
-      'Outreach',
-      'Sec-Check',
-    ]) {
+    for (const { label, description } of AGENTS) {
       expect(screen.getByText(label)).toBeInTheDocument()
+      expect(screen.getByText(description)).toBeInTheDocument()
     }
   })
 })
