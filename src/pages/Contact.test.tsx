@@ -69,12 +69,47 @@ describe('Contact', () => {
     expect((nameInput as HTMLInputElement).value).toBe('')
   })
 
-  it('clears a field error once the user edits that field', async () => {
+  it('clears field errors once the user edits those fields', async () => {
     render(<Contact />)
     await userEvent.click(screen.getByRole('button', { name: /send message/i }))
     expect(screen.getByText('Name is required.')).toBeInTheDocument()
+    expect(screen.getByText('Email address is required.')).toBeInTheDocument()
+    expect(screen.getByText('Message is required.')).toBeInTheDocument()
+
     await userEvent.type(screen.getByLabelText(/full name/i), 'J')
     expect(screen.queryByText('Name is required.')).not.toBeInTheDocument()
+    expect(screen.getByText('Email address is required.')).toBeInTheDocument()
+    expect(screen.getByText('Message is required.')).toBeInTheDocument()
+
+    await userEvent.type(
+      screen.getByLabelText(/email address/i),
+      'jane@example.com',
+    )
+    expect(
+      screen.queryByText('Email address is required.'),
+    ).not.toBeInTheDocument()
+    expect(screen.getByText('Message is required.')).toBeInTheDocument()
+
+    await userEvent.type(screen.getByLabelText(/message/i), 'Hello')
+    expect(screen.queryByText('Message is required.')).not.toBeInTheDocument()
+  })
+
+  it('allows selecting enquiry reason', async () => {
+    render(<Contact />)
+    const select = screen.getByLabelText(/reason for enquiry/i)
+    expect((select as HTMLSelectElement).value).toBe('general')
+    await userEvent.selectOptions(select, 'partnership')
+    expect((select as HTMLSelectElement).value).toBe('partnership')
+  })
+
+  it('shows validation errors when fields contain only whitespace', async () => {
+    render(<Contact />)
+    await userEvent.type(screen.getByLabelText(/full name/i), '   ')
+    await userEvent.type(screen.getByLabelText(/email address/i), '   ')
+    await userEvent.type(screen.getByLabelText(/message/i), '   ')
+    await userEvent.click(screen.getByRole('button', { name: /send message/i }))
+    expect(screen.getByText('Name is required.')).toBeInTheDocument()
+    expect(screen.getByText('Email address is required.')).toBeInTheDocument()
     expect(screen.getByText('Message is required.')).toBeInTheDocument()
   })
 
